@@ -1,6 +1,14 @@
 {
   "headers": [
     {
+      "source": "/assets/(.*).mp4",
+      "headers": [
+        { "key": "Content-Type", "value": "video/mp4" },
+        { "key": "Accept-Ranges", "value": "bytes" },
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    },
+    {
       "source": "/assets/(.*).pdb",
       "headers": [
         { "key": "Content-Type", "value": "chemical/x-pdb" },
