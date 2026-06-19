@@ -640,6 +640,13 @@ function initViewer(){
     viewer.setStyle({ chain: CONFIG.structure.chainA.id }, { cartoon: { color: CONFIG.structure.chainA.color } });
     viewer.setStyle({ chain: CONFIG.structure.chainB.id }, { cartoon: { color: CONFIG.structure.chainB.color } });
     viewer.setStyle({ resn: "HOH" }, {});
+    viewer.setStyle(
+      { hetflag: true },
+      {
+        sphere: { scale: 0.35, colorscheme: "Jmol" },
+        stick:  { radius: 0.15, colorscheme: "Jmol" }
+      }
+    );
   }
 
   function applyHighlightStyle(){
