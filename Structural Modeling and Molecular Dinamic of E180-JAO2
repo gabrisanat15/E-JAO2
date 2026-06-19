@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E1620">
+<title>Material complementario · Póster científico</title>
+
+<!-- Tipografías: Fraunces (titulares), Inter (texto), IBM Plex Mono (datos/etiquetas) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,680&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- 3Dmol.js: visor molecular interactivo (rotar con el dedo, zoom con pellizco) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.5.3/3Dmol-min.js"></script>
+
+<style>
+  /* ============================================================
+     TOKENS DE DISEÑO
+     ============================================================ */
+  :root{
+    --bg:        #0E1620;
+    --bg-deep:   #0A1119;
+    --surface:   #16212C;
+    --surface-2: #1C2933;
+    --border:    #2A3744;
+    --text:      #EDEFF2;
+    --text-muted:#8FA0AE;
+    --chain-a:   #5EC8C2;
+    --chain-b:   #E8A23D;
+    --hl-a:      #7CF5EE;
+    --hl-b:      #FFC56B;
+    --radius:    10px;
+    --maxw:      640px;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(94,200,194,0.08), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; }
+
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 20px 64px;
+  }
+
+  /* ============================================================
+     CABECERA / HERO
+     ============================================================ */
+  header.hero{
+    padding:56px 0 36px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:40px;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--text-muted);
+    margin:0 0 14px;
+  }
+  .eyebrow::before{ content:"// "; color:var(--chain-a); }
+
+  h1.title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(28px, 7vw, 42px);
+    line-height:1.08;
+    margin:0 0 14px;
+    letter-spacing:-0.01em;
+  }
+
+  .subtitle{
+    font-size:15.5px;
+    color:var(--text-muted);
+    max-width:48ch;
+    margin:0;
+  }
+
+  /* ============================================================
+     PANELES / SECCIONES
+     ============================================================ */
+  section.panel{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:24px 20px 28px;
+    margin-bottom:24px;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  section.panel.in-view{ opacity:1; transform:translateY(0); }
+
+  .panel-header{ margin-bottom:18px; }
+
+  h2.panel-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:22px;
+    margin:0 0 6px;
+  }
+
+  .panel-desc{
+    font-size:14px;
+    color:var(--text-muted);
+    margin:0;
+  }
+
+  /* ============================================================
+     VISOR MOLECULAR
+     ============================================================ */
+  .viewer-frame{
+    position:relative;
+    border-radius:8px;
+    overflow:hidden;
+    background:var(--bg-deep);
+    aspect-ratio: 4 / 3.4;
+    touch-action:none;
+  }
+
+  #viewer-canvas{
+    width:100%;
+    height:100%;
+    touch-action:none;
+  }
+
+  /* esquinas tipo visor de instrumento óptico */
+  .corner{
+    position:absolute;
+    width:18px; height:18px;
+    border:2px solid var(--chain-a);
+    opacity:.85;
+    pointer-events:none;
+    z-index:2;
+  }
+  .corner.tl{ top:10px; left:10px; border-right:none; border-bottom:none; }
+  .corner.tr{ top:10px; right:10px; border-left:none; border-bottom:none; border-color:var(--chain-b); }
+  .corner.bl{ bottom:10px; left:10px; border-right:none; border-top:none; border-color:var(--chain-b); }
+  .corner.br{ bottom:10px; right:10px; border-left:none; border-top:none; }
+
+  .viewer-status{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--text-muted);
+    text-align:center;
+    padding:24px;
+    z-index:1;
+    pointer-events:none;
+  }
+  .viewer-status[hidden]{ display:none; }
+
+  .viewer-hint{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--text-muted);
+    text-align:center;
+    margin:10px 0 0;
+  }
+
+  /* Interruptor Dímero / Residuos resaltados */
+  .switch{
+    display:flex;
+    margin-top:14px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:4px;
+    gap:4px;
+  }
+  .switch button{
+    flex:1;
+    border:none;
+    background:transparent;
+    color:var(--text-muted);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.02em;
+    padding:9px 10px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:background .25s ease, color .25s ease;
+  }
+  .switch button.active{
+    background:linear-gradient(90deg, var(--chain-a), var(--chain-b));
+    color:#0A1119;
+    font-weight:600;
+  }
+  .switch button:focus-visible{ outline:2px solid var(--text); outline-offset:2px; }
+
+  /* Leyenda de residuos */
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:16px;
+  }
+  .legend[hidden]{ display:none; }
+
+  .legend-chip{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:6px 12px 6px 8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+  }
+  .legend-dot{
+    width:9px; height:9px;
+    border-radius:50%;
+    flex-shrink:0;
+  }
+  .legend-chain{ color:var(--text-muted); }
+
+  /* ============================================================
+     VÍDEO
+     ============================================================ */
+  video{
+    width:100%;
+    border-radius:8px;
+    background:var(--bg-deep);
+    display:block;
+  }
+  .caption{
+    font-size:13.5px;
+    color:var(--text-muted);
+    margin:12px 0 0;
+  }
+
+  /* ============================================================
+     DATOS DE LA DINÁMICA
+     ============================================================ */
+  .data-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    border-radius:8px;
+    overflow:hidden;
+  }
+  .data-item{
+    background:var(--surface-2);
+    padding:14px 14px 16px;
+  }
+  .data-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text-muted);
+    margin:0 0 6px;
+  }
+  .data-value{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:21px;
+    margin:0;
+  }
+  .data-value .unit{
+    font-family:'Inter', sans-serif;
+    font-weight:400;
+    font-size:13px;
+    color:var(--text-muted);
+    margin-left:4px;
+  }
+
+  /* ============================================================
+     CONTACTO
+     ============================================================ */
+  .contact-name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:22px;
+    margin:0 0 4px;
+  }
+  .contact-affiliation{
+    font-size:14px;
+    color:var(--text-muted);
+    margin:0 0 18px;
+  }
+  .contact-links{
+    list-style:none;
+    margin:0; padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .contact-links a{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    text-decoration:none;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:13px 14px;
+    font-size:14.5px;
+    transition:border-color .2s ease;
+  }
+  .contact-links a:hover,
+  .contact-links a:focus-visible{ border-color:var(--chain-a); outline:none; }
+  .contact-links .arrow{ color:var(--chain-a); }
+
+  /* ============================================================
+     PIE
+     ============================================================ */
+  footer{
+    text-align:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--text-muted);
+    padding-top:8px;
+  }
+
+  @media (min-width:560px){
+    header.hero{ padding-top:72px; }
+    .data-grid{ grid-template-columns:1fr 1fr 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    section.panel{ transition:none; opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">material complementario · póster científico</p>
+    <h1 class="title" id="hero-title">Título del proyecto</h1>
+    <p class="subtitle" id="hero-subtitle">Breve descripción de una o dos líneas sobre el estudio estructural.</p>
+  </header>
+
+  <main>
+
+    <!-- ESTRUCTURA -->
+    <section class="panel" id="panel-structure">
+      <div class="panel-header">
+        <p class="eyebrow">estructura.pdb</p>
+        <h2 class="panel-title">Visor molecular interactivo</h2>
+        <p class="panel-desc">Arrastra con el dedo para rotar y pellizca para hacer zoom.</p>
+      </div>
+
+      <div class="viewer-frame">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+        <div id="viewer-canvas"></div>
+        <p class="viewer-status" id="viewer-status">Cargando estructura…</p>
+      </div>
+
+      <div class="switch">
+        <button id="btn-view-dimer" class="active" type="button">Dímero</button>
+        <button id="btn-view-highlight" type="button">Residuos resaltados</button>
+      </div>
+
+      <div class="legend" id="legend" hidden></div>
+    </section>
+
+    <!-- DINÁMICA MOLECULAR -->
+    <section class="panel" id="panel-dynamics">
+      <div class="panel-header">
+        <p class="eyebrow">dinamica.mp4</p>
+        <h2 class="panel-title">Simulación de dinámica molecular</h2>
+      </div>
+      <video id="md-video" controls playsinline preload="metadata">
+        <source id="md-video-source" src="" type="video/mp4">
+        Tu navegador no admite la reproducción de vídeo HTML5.
+      </video>
+      <p class="caption" id="md-caption">Descripción breve de la simulación.</p>
+    </section>
+
+    <!-- DATOS -->
+    <section class="panel" id="panel-data">
+      <div class="panel-header">
+        <p class="eyebrow">metadata.json</p>
+        <h2 class="panel-title">Parámetros de la dinámica</h2>
+      </div>
+      <div class="data-grid" id="data-grid"></div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section class="panel" id="panel-contact">
+      <div class="panel-header">
+        <p class="eyebrow">contacto.vcf</p>
+        <h2 class="panel-title">Autoría</h2>
+      </div>
+      <p class="contact-name" id="contact-name">Tu nombre</p>
+      <p class="contact-affiliation" id="contact-affiliation">Departamento, institución</p>
+      <ul class="contact-links" id="contact-links"></ul>
+    </section>
+
+  </main>
+
+  <footer>generado para difusión científica</footer>
+
+</div>
+
+<script>
+/* ================================================================
+   GUÍA RÁPIDA DE EDICIÓN
+   ================================================================
+   Todo lo que tienes que personalizar está en el objeto CONFIG
+   de aquí abajo. No hace falta tocar nada más del archivo.
+
+   1) Sube tu archivo .pdb y tu vídeo .mp4 a un repositorio de GitHub.
+   2) Para cada archivo, entra en GitHub, ábrelo y pulsa el botón
+      "Raw" (o los tres puntos > "Download raw file"). Copia esa URL.
+      Debe EMPEZAR por:  https://raw.githubusercontent.com/...
+      (NO uses una URL del tipo github.com/usuario/repo/raw/... ,
+      esa no funciona bien para mostrar el vídeo en el navegador).
+   3) Pega esas URLs en pdbUrl y videoUrl más abajo.
+   4) Indica en highlightResidues qué residuos quieres resaltar:
+      solo necesitas la cadena (chain) y el número de residuo (resi);
+      el nombre del aminoácido (p.ej. LYS, GLU) se lee automáticamente
+      del propio archivo .pdb y se muestra en la leyenda.
+   ================================================================ */
+
+const CONFIG = {
+
+  // --- Cabecera de la página ---
+  hero: {
+    title: "Estructural Modeling and Molecular Dinamic of E180-JAO2 dimer",
+    subtitle: "Breve descripción de una o dos líneas sobre el estudio estructural.",
+    pageTitle: "E180-JAO dimer"
+  },
+
+  // --- Visor de la estructura ---
+  structure: {
+    // URL "raw" de tu archivo .pdb en GitHub
+    pdbUrl: "https://raw.githubusercontent.com/usuario/repositorio/main/dimero.pdb",
+
+    // Identificador de cadena tal y como aparece en tu .pdb (revisa el archivo si no estás seguro)
+    chainA: { id: "A", label: "Cadena A", color: "#5EC8C2" },
+    chainB: { id: "B", label: "Cadena B", color: "#E8A23D" },
+
+    // Colores con los que se resaltan los residuos seleccionados
+    highlightColorA: "#7CF5EE",
+    highlightColorB: "#FFC56B",
+
+    // Residuos a resaltar: añade tantos como necesites por cadena
+    highlightResidues: {
+      A: [
+        { resi: 45 },
+        { resi: 88 }
+      ],
+      B: [
+        { resi: 52 },
+        { resi: 101 }
+      ]
+    }
+  },
+
+  // --- Vídeo de la dinámica molecular ---
+  dynamics: {
+    // URL "raw" de tu archivo .mp4 en GitHub
+    videoUrl: "https://raw.githubusercontent.com/usuario/repositorio/main/dinamica.mp4",
+    caption: "Simulación de 100 ns mostrando la estabilidad del dímero en disolución acuosa."
+  },
+
+  // --- Datos de la dinámica molecular (añade o quita los que quieras) ---
+  mdData: [
+    { label: "Tiempo de simulación", value: "100", unit: "ns" },
+    { label: "RMSD promedio",        value: "1.8", unit: "Å" },
+    { label: "Campo de fuerza",      value: "AMBER ff19SB", unit: "" },
+    { label: "Software",             value: "GROMACS 2023", unit: "" }
+  ],
+
+  // --- Contacto ---
+  contact: {
+    name: "Tu nombre",
+    affiliation: "Departamento, Universidad / Institución",
+    email: "tucorreo@dominio.com",
+    links: [
+      { label: "Enviar correo", url: "mailto:tucorreo@dominio.com" },
+      { label: "ORCID",         url: "https://orcid.org/0000-0000-0000-0000" },
+      { label: "Web del grupo de investigación", url: "https://tu-laboratorio.example.com" }
+    ]
+  }
+};
+
+/* ================================================================
+   A partir de aquí: lógica de la página. No es necesario editarlo.
+   ================================================================ */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  // --- Cabecera ---
+  document.title = CONFIG.hero.pageTitle;
+  document.getElementById("hero-title").textContent = CONFIG.hero.title;
+  document.getElementById("hero-subtitle").textContent = CONFIG.hero.subtitle;
+
+  // --- Vídeo ---
+  const videoEl = document.getElementById("md-video");
+  document.getElementById("md-video-source").src = CONFIG.dynamics.videoUrl;
+  document.getElementById("md-caption").textContent = CONFIG.dynamics.caption;
+  videoEl.load();
+
+  // --- Datos de la dinámica ---
+  const dataGrid = document.getElementById("data-grid");
+  CONFIG.mdData.forEach(item => {
+    const cell = document.createElement("div");
+    cell.className = "data-item";
+    cell.innerHTML = `
+      <p class="data-label">${escapeHtml(item.label)}</p>
+      <p class="data-value">${escapeHtml(item.value)}${item.unit ? `<span class="unit">${escapeHtml(item.unit)}</span>` : ""}</p>
+    `;
+    dataGrid.appendChild(cell);
+  });
+
+  // --- Contacto ---
+  document.getElementById("contact-name").textContent = CONFIG.contact.name;
+  document.getElementById("contact-affiliation").textContent = CONFIG.contact.affiliation;
+  const linksEl = document.getElementById("contact-links");
+  CONFIG.contact.links.forEach(link => {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.href = link.url;
+    if (link.url.startsWith("http")) a.target = "_blank";
+    a.rel = "noopener";
+    a.innerHTML = `<span>${escapeHtml(link.label)}</span><span class="arrow">→</span>`;
+    li.appendChild(a);
+    linksEl.appendChild(li);
+  });
+
+  // --- Animación de aparición de paneles al hacer scroll ---
+  const panels = document.querySelectorAll("section.panel");
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    panels.forEach(p => observer.observe(p));
+  } else {
+    panels.forEach(p => p.classList.add("in-view"));
+  }
+
+  // --- Visor molecular ---
+  initViewer();
+});
+
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function initViewer(){
+  const statusEl = document.getElementById("viewer-status");
+  const legendEl = document.getElementById("legend");
+  const btnDimer = document.getElementById("btn-view-dimer");
+  const btnHighlight = document.getElementById("btn-view-highlight");
+
+  if (typeof $3Dmol === "undefined") {
+    statusEl.textContent = "No se pudo cargar la librería del visor 3D (revisa tu conexión a internet).";
+    return;
+  }
+
+  const viewer = $3Dmol.createViewer("viewer-canvas", {
+    backgroundColor: "#0A1119"
+  });
+
+  let model = null;
+  let highlighted = false;
+
+  fetch(CONFIG.structure.pdbUrl)
+    .then(res => {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.text();
+    })
+    .then(pdbText => {
+      model = viewer.addModel(pdbText, "pdb");
+      applyBaseStyle();
+      viewer.zoomTo();
+      viewer.render();
+      statusEl.hidden = true;
+      buildLegend();
+      window.addEventListener("resize", () => viewer.resize());
+    })
+    .catch(err => {
+      statusEl.textContent =
+        "No se pudo cargar la estructura. Comprueba la URL en CONFIG.structure.pdbUrl (debe ser una URL 'raw' de GitHub).";
+      console.error("Error cargando el PDB:", err);
+    });
+
+  function applyBaseStyle(){
+    viewer.setStyle({}, { cartoon: { color: "#5b6b78" } });
+    viewer.setStyle({ chain: CONFIG.structure.chainA.id }, { cartoon: { color: CONFIG.structure.chainA.color } });
+    viewer.setStyle({ chain: CONFIG.structure.chainB.id }, { cartoon: { color: CONFIG.structure.chainB.color } });
+    viewer.setStyle({ resn: "HOH" }, {});
+  }
+
+  function applyHighlightStyle(){
+    viewer.removeAllLabels();
+    Object.entries(CONFIG.structure.highlightResidues).forEach(([chainId, residues]) => {
+      const isChainA = chainId === CONFIG.structure.chainA.id;
+      const color = isChainA ? CONFIG.structure.highlightColorA : CONFIG.structure.highlightColorB;
+      residues.forEach(r => {
+        const sel = { chain: chainId, resi: r.resi };
+        viewer.addStyle(sel, {
+          stick: { color: color, radius: 0.2 },
+          sphere: { scale: 0.28, color: color }
+        });
+      });
+    });
+  }
+
+  function render(){
+    applyBaseStyle();
+    if (highlighted) applyHighlightStyle();
+    viewer.render();
+  }
+
+  function buildLegend(){
+    if (!model) return;
+    legendEl.innerHTML = "";
+    Object.entries(CONFIG.structure.highlightResidues).forEach(([chainId, residues]) => {
+      const isChainA = chainId === CONFIG.structure.chainA.id;
+      const color = isChainA ? CONFIG.structure.highlightColorA : CONFIG.structure.highlightColorB;
+      residues.forEach(r => {
+        const atoms = model.selectedAtoms({ chain: chainId, resi: r.resi });
+        const resn = atoms.length ? atoms[0].resn : "?";
+        const chip = document.createElement("span");
+        chip.className = "legend-chip";
+        chip.innerHTML = `
+          <span class="legend-dot" style="background:${color}"></span>
+          <span class="legend-chain">${escapeHtml(chainId)}</span>
+          <span>${escapeHtml(resn)}${escapeHtml(String(r.resi))}</span>
+        `;
+        legendEl.appendChild(chip);
+      });
+    });
+  }
+
+  btnDimer.addEventListener("click", () => {
+    highlighted = false;
+    btnDimer.classList.add("active");
+    btnHighlight.classList.remove("active");
+    legendEl.hidden = true;
+    render();
+  });
+
+  btnHighlight.addEventListener("click", () => {
+    highlighted = true;
+    btnHighlight.classList.add("active");
+    btnDimer.classList.remove("active");
+    legendEl.hidden = false;
+    render();
+  });
+}
+</script>
+
+</body>
+</html>
