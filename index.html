@@ -451,9 +451,9 @@ const CONFIG = {
 
   // --- Cabecera de la página ---
   hero: {
-    title: "Título del proyecto",
+    title: "Estructural Modeling and Molecular Dinamic of E180-JAO2 dimer",
     subtitle: "Breve descripción de una o dos líneas sobre el estudio estructural.",
-    pageTitle: "Título del proyecto · Material complementario"
+    pageTitle: "E180-JAO dimer"
   },
 
   // --- Visor de la estructura ---
@@ -461,7 +461,7 @@ const CONFIG = {
     // Ruta a tu archivo .pdb. Por defecto apunta a la carpeta "assets"
     // de este mismo proyecto. Si prefieres alojarlo fuera, sustitúyela
     // por una URL completa "raw" de GitHub.
-    pdbUrl: "assets/dimero.pdb",
+    pdbUrl: "assets/dimer_E180JAO2_poster.pdb",
 
     // Identificador de cadena tal y como aparece en tu .pdb (revisa el archivo si no estás seguro)
     chainA: { id: "A", label: "Cadena A", color: "#5EC8C2" },
@@ -474,12 +474,25 @@ const CONFIG = {
     // Residuos a resaltar: añade tantos como necesites por cadena
     highlightResidues: {
       A: [
+        { resi: 3 },
+        { resi: 44 },
         { resi: 45 },
-        { resi: 88 }
+        { resi: 46 },
+        { resi: 47 },
+        { resi: 49 },
+        { resi: 50 },
+        { resi: 55 },
+        { resi: 57 },
+        { resi: 58 },
+        { resi: 59 },
       ],
       B: [
-        { resi: 52 },
-        { resi: 101 }
+        { resi: 43 },
+        { resi: 46 },
+        { resi: 47 },
+        { resi: 49 },
+        { resi: 171 },
+        { resi: 175 },
       ]
     }
   },
@@ -489,27 +502,27 @@ const CONFIG = {
     // Ruta a tu archivo .mp4. Por defecto apunta a la carpeta "assets"
     // de este mismo proyecto. Si pesa demasiado para subirlo al repo,
     // sustitúyela por una URL completa "raw" de GitHub (o jsDelivr).
-    videoUrl: "assets/dinamica.mp4",
-    caption: "Simulación de 100 ns mostrando la estabilidad del dímero en disolución acuosa."
+    videoUrl: "assets/movie3.mp4",
+    caption: "50-ns simulation showing the stability of the dimer in saline solution"
   },
 
   // --- Datos de la dinámica molecular (añade o quita los que quieras) ---
   mdData: [
-    { label: "Tiempo de simulación", value: "100", unit: "ns" },
-    { label: "RMSD promedio",        value: "1.8", unit: "Å" },
+    { label: "Simulation time", value: "50", unit: "ns" },
+    { label: "RMSD",        value: "1.8", unit: "Å" },
     { label: "Campo de fuerza",      value: "AMBER ff19SB", unit: "" },
-    { label: "Software",             value: "GROMACS 2023", unit: "" }
+    { label: "Software",             value: "OpenMM", unit: "" }
   ],
 
   // --- Contacto ---
   contact: {
-    name: "Tu nombre",
-    affiliation: "Departamento, Universidad / Institución",
-    email: "tucorreo@dominio.com",
+    name: "Gabriel Sánchez Atrián",
+    affiliation: "Plant Molecular Genomic, CNB",
+    email: "gabriel.sanchez@cnb.csic.es",
     links: [
-      { label: "Enviar correo", url: "mailto:tucorreo@dominio.com" },
+      { label: "Enviar correo", url: "mailto:gabriel.sanchez@cnb.csic.es" },
       { label: "ORCID",         url: "https://orcid.org/0000-0000-0000-0000" },
-      { label: "Web del grupo de investigación", url: "https://tu-laboratorio.example.com" }
+      { label: "", url: "" }
     ]
   }
 };
