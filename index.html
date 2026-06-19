@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0E1620">
-<title>Material complementario · Póster científico</title>
+<title>E180-JAO2 dimer</title>
 
 <!-- Tipografías: Fraunces (titulares), Inter (texto), IBM Plex Mono (datos/etiquetas) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -359,9 +359,9 @@
     <!-- ESTRUCTURA -->
     <section class="panel" id="panel-structure">
       <div class="panel-header">
-        <p class="eyebrow">estructura.pdb</p>
-        <h2 class="panel-title">Visor molecular interactivo</h2>
-        <p class="panel-desc">Arrastra con el dedo para rotar y pellizca para hacer zoom.</p>
+        <p class="eyebrow">E180-JAO2 dimer</p>
+        <h2 class="panel-title">Interactive molecular viewer</h2>
+        <p class="panel-desc">Swipe to rotate and pinch to zoom.</p>
       </div>
 
       <div class="viewer-frame">
@@ -370,12 +370,12 @@
         <span class="corner bl"></span>
         <span class="corner br"></span>
         <div id="viewer-canvas"></div>
-        <p class="viewer-status" id="viewer-status">Cargando estructura…</p>
+        <p class="viewer-status" id="viewer-status">Loading structur…</p>
       </div>
 
       <div class="switch">
-        <button id="btn-view-dimer" class="active" type="button">Dímero</button>
-        <button id="btn-view-highlight" type="button">Residuos resaltados</button>
+        <button id="btn-view-dimer" class="active" type="button">Dimer</button>
+        <button id="btn-view-highlight" type="button">Interaction</button>
       </div>
 
       <div class="legend" id="legend" hidden></div>
@@ -406,8 +406,8 @@
     <!-- CONTACTO -->
     <section class="panel" id="panel-contact">
       <div class="panel-header">
-        <p class="eyebrow">contacto.vcf</p>
-        <h2 class="panel-title">Autoría</h2>
+        <p class="eyebrow">contact</p>
+        <h2 class="panel-title">Authorship</h2>
       </div>
       <p class="contact-name" id="contact-name">Tu nombre</p>
       <p class="contact-affiliation" id="contact-affiliation">Departamento, institución</p>
@@ -509,12 +509,12 @@ const CONFIG = {
   // --- Datos de la dinámica molecular (añade o quita los que quieras) ---
   mdData: [
     { label: "Simulation time", value: "50", unit: "ns" },
-    { label: "RMSD",        value: "1.8", unit: "Å" },
+    { label: "RMSD average",        value: "2.5", unit: "Å" },
     { label: "Campo de fuerza",      value: "AMBER ff19SB", unit: "" },
     { label: "Software",             value: "OpenMM", unit: "" }
   ],
 
-  // --- Contacto ---
+  // --- Contact ---
   contact: {
     name: "Gabriel Sánchez Atrián",
     affiliation: "Plant Molecular Genomic, CNB",
@@ -522,7 +522,6 @@ const CONFIG = {
     links: [
       { label: "Enviar correo", url: "mailto:gabriel.sanchez@cnb.csic.es" },
       { label: "ORCID",         url: "https://orcid.org/0000-0000-0000-0000" },
-      { label: "", url: "" }
     ]
   }
 };
