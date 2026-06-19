@@ -15,9 +15,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.5.3/3Dmol-min.js"></script>
 
 <style>
-  /* ============================================================
-     TOKENS DE DISEÑO
-     ============================================================ */
   :root{
     --bg:        #0E1620;
     --bg-deep:   #0A1119;
@@ -57,9 +54,6 @@
     padding:0 20px 64px;
   }
 
-  /* ============================================================
-     CABECERA / HERO
-     ============================================================ */
   header.hero{
     padding:56px 0 36px;
     border-bottom:1px solid var(--border);
@@ -92,9 +86,6 @@
     margin:0;
   }
 
-  /* ============================================================
-     PANELES / SECCIONES
-     ============================================================ */
   section.panel{
     background:var(--surface);
     border:1px solid var(--border);
@@ -122,9 +113,6 @@
     margin:0;
   }
 
-  /* ============================================================
-     VISOR MOLECULAR
-     ============================================================ */
   .viewer-frame{
     position:relative;
     border-radius:8px;
@@ -140,7 +128,6 @@
     touch-action:none;
   }
 
-  /* esquinas tipo visor de instrumento óptico */
   .corner{
     position:absolute;
     width:18px; height:18px;
@@ -175,7 +162,6 @@
     margin:10px 0 0;
   }
 
-  /* Interruptor Dímero / Residuos resaltados */
   .switch{
     display:flex;
     margin-top:14px;
@@ -205,7 +191,6 @@
   }
   .switch button:focus-visible{ outline:2px solid var(--text); outline-offset:2px; }
 
-  /* Leyenda de residuos */
   .legend{
     display:flex;
     flex-wrap:wrap;
@@ -232,9 +217,6 @@
   }
   .legend-chain{ color:var(--text-muted); }
 
-  /* ============================================================
-     VÍDEO
-     ============================================================ */
   video{
     width:100%;
     border-radius:8px;
@@ -247,9 +229,6 @@
     margin:12px 0 0;
   }
 
-  /* ============================================================
-     DATOS DE LA DINÁMICA
-     ============================================================ */
   .data-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -285,9 +264,6 @@
     margin-left:4px;
   }
 
-  /* ============================================================
-     CONTACTO
-     ============================================================ */
   .contact-name{
     font-family:'Fraunces', serif;
     font-weight:600;
@@ -322,9 +298,6 @@
   .contact-links a:focus-visible{ border-color:var(--chain-a); outline:none; }
   .contact-links .arrow{ color:var(--chain-a); }
 
-  /* ============================================================
-     PIE
-     ============================================================ */
   footer{
     text-align:center;
     font-family:'IBM Plex Mono', monospace;
@@ -421,57 +394,22 @@
 </div>
 
 <script>
-/* ================================================================
-   GUÍA RÁPIDA DE EDICIÓN
-   ================================================================
-   Todo lo que tienes que personalizar está en el objeto CONFIG
-   de aquí abajo. No hace falta tocar nada más del archivo.
-
-   1) Coloca tu archivo .pdb y tu vídeo .mp4 dentro de la carpeta
-      "assets" de este mismo proyecto (junto a este index.html),
-      con los nombres dimero.pdb y dinamica.mp4 (o cambia los nombres
-      en pdbUrl / videoUrl más abajo para que coincidan).
-      Al desplegar en Vercel, esos archivos se sirven directamente
-      desde tu propio dominio: es la opción más fiable para que el
-      vídeo se reproduzca bien también en iPhone.
-   2) ALTERNATIVA: si tu .mp4 pesa demasiado para subirlo al
-      repositorio (más de ~40-50 MB), puedes seguir alojándolo en
-      GitHub y pegar aquí su URL "raw" completa, que debe EMPEZAR
-      por  https://raw.githubusercontent.com/...
-      (NO la URL github.com/usuario/repo/raw/..., esa no sirve para
-      reproducir vídeo en el navegador).
-   3) Pega la ruta o URL final en pdbUrl y videoUrl más abajo.
-   4) Indica en highlightResidues qué residuos quieres resaltar:
-      solo necesitas la cadena (chain) y el número de residuo (resi);
-      el nombre del aminoácido (p.ej. LYS, GLU) se lee automáticamente
-      del propio archivo .pdb y se muestra en la leyenda.
-   ================================================================ */
-
 const CONFIG = {
 
-  // --- Cabecera de la página ---
   hero: {
     title: "Estructural Modeling and Molecular Dinamic of E180-JAO2 dimer",
-    subtitle: "Breve descripción de una o dos líneas sobre el estudio estructural.",
     pageTitle: "E180-JAO dimer"
   },
 
-  // --- Visor de la estructura ---
   structure: {
-    // Ruta a tu archivo .pdb. Por defecto apunta a la carpeta "assets"
-    // de este mismo proyecto. Si prefieres alojarlo fuera, sustitúyela
-    // por una URL completa "raw" de GitHub.
     pdbUrl: "https://raw.githubusercontent.com/gabrisanat15/E-JAO2/refs/heads/main/dimer_E180JAO2_poster.pdb",
 
-    // Identificador de cadena tal y como aparece en tu .pdb (revisa el archivo si no estás seguro)
     chainA: { id: "A", label: "Cadena A", color: "#5EC8C2" },
     chainB: { id: "B", label: "Cadena B", color: "#E8A23D" },
 
-    // Colores con los que se resaltan los residuos seleccionados
     highlightColorA: "#7CF5EE",
     highlightColorB: "#FFC56B",
 
-    // Residuos a resaltar: añade tantos como necesites por cadena
     highlightResidues: {
       A: [
         { resi: 3 },
@@ -497,16 +435,14 @@ const CONFIG = {
     }
   },
 
-  // --- Vídeo de la dinámica molecular ---
   dynamics: {
-    // Ruta a tu archivo .mp4. Por defecto apunta a la carpeta "assets"
-    // de este mismo proyecto. Si pesa demasiado para subirlo al repo,
-    // sustitúyela por una URL completa "raw" de GitHub (o jsDelivr).
-    videoUrl: "https://rawgithub.com/gabrisanat15/E-JAO2/raw/refs/heads/main/dinamica.mp4",
+    // CORREGIDO: el dominio era "rawgithub.com" (no existe) mezclado con
+    // el formato "/raw/" — el dominio correcto de GitHub es
+    // raw.githubusercontent.com, igual que en pdbUrl.
+    videoUrl: "https://raw.githubusercontent.com/gabrisanat15/E-JAO2/refs/heads/main/dinamica.mp4",
     caption: " 50-ns simulation showing the stability of the dimer in saline solution"
   },
 
-  // --- Datos de la dinámica molecular (añade o quita los que quieras) ---
   mdData: [
     { label: "Simulation time", value: "50", unit: "ns" },
     { label: "RMSD average",        value: "2.5", unit: "Å" },
@@ -514,7 +450,6 @@ const CONFIG = {
     { label: "Software",             value: "OpenMM", unit: "" }
   ],
 
-  // --- Contact ---
   contact: {
     name: "Gabriel Sánchez Atrián",
     affiliation: "Plant Molecular Genomic, CNB",
@@ -526,24 +461,17 @@ const CONFIG = {
   }
 };
 
-/* ================================================================
-   A partir de aquí: lógica de la página. No es necesario editarlo.
-   ================================================================ */
-
 document.addEventListener("DOMContentLoaded", () => {
 
-  // --- Cabecera ---
   document.title = CONFIG.hero.pageTitle;
   document.getElementById("hero-title").textContent = CONFIG.hero.title;
   document.getElementById("hero-subtitle").textContent = CONFIG.hero.subtitle;
 
-  // --- Vídeo ---
   const videoEl = document.getElementById("md-video");
   document.getElementById("md-video-source").src = CONFIG.dynamics.videoUrl;
   document.getElementById("md-caption").textContent = CONFIG.dynamics.caption;
   videoEl.load();
 
-  // --- Datos de la dinámica ---
   const dataGrid = document.getElementById("data-grid");
   CONFIG.mdData.forEach(item => {
     const cell = document.createElement("div");
@@ -555,7 +483,6 @@ document.addEventListener("DOMContentLoaded", () => {
     dataGrid.appendChild(cell);
   });
 
-  // --- Contacto ---
   document.getElementById("contact-name").textContent = CONFIG.contact.name;
   document.getElementById("contact-affiliation").textContent = CONFIG.contact.affiliation;
   const linksEl = document.getElementById("contact-links");
@@ -570,7 +497,6 @@ document.addEventListener("DOMContentLoaded", () => {
     linksEl.appendChild(li);
   });
 
-  // --- Animación de aparición de paneles al hacer scroll ---
   const panels = document.querySelectorAll("section.panel");
   if ("IntersectionObserver" in window) {
     const observer = new IntersectionObserver((entries) => {
@@ -586,7 +512,6 @@ document.addEventListener("DOMContentLoaded", () => {
     panels.forEach(p => p.classList.add("in-view"));
   }
 
-  // --- Visor molecular ---
   initViewer();
 });
 
@@ -639,7 +564,9 @@ function initViewer(){
     viewer.setStyle({}, { cartoon: { color: "#5b6b78" } });
     viewer.setStyle({ chain: CONFIG.structure.chainA.id }, { cartoon: { color: CONFIG.structure.chainA.color } });
     viewer.setStyle({ chain: CONFIG.structure.chainB.id }, { cartoon: { color: CONFIG.structure.chainB.color } });
-    viewer.setStyle({ resn: "HOH" }, {});
+    // El estilo "cartoon" no dibuja cofactores/iones (HETATM sueltos):
+    // les damos un estilo propio ANTES de ocultar las aguas, para que
+    // la siguiente línea pueda ocultarlas sin que esta las vuelva a mostrar.
     viewer.setStyle(
       { hetflag: true },
       {
@@ -647,6 +574,7 @@ function initViewer(){
         stick:  { radius: 0.15, colorscheme: "Jmol" }
       }
     );
+    viewer.setStyle({ resn: "HOH" }, {});
   }
 
   function applyHighlightStyle(){
