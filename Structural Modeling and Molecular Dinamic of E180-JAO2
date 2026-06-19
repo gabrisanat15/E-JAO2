@@ -452,7 +452,7 @@ const CONFIG = {
   // --- Visor de la estructura ---
   structure: {
     // URL "raw" de tu archivo .pdb en GitHub
-    pdbUrl: "https://raw.githubusercontent.com/usuario/repositorio/main/dimero.pdb",
+    pdbUrl: "https://raw.githubusercontent.com/gabrisanat15/E-JAO2/refs/heads/main/dimer_E180JAO2_poster.pdb",
 
     // Identificador de cadena tal y como aparece en tu .pdb (revisa el archivo si no estás seguro)
     chainA: { id: "A", label: "Cadena A", color: "#5EC8C2" },
@@ -465,12 +465,25 @@ const CONFIG = {
     // Residuos a resaltar: añade tantos como necesites por cadena
     highlightResidues: {
       A: [
+        { resi: 3 },
+        { resi: 44 },
         { resi: 45 },
-        { resi: 88 }
+        { resi: 46 },
+        { resi: 47 },
+        { resi: 49 },
+        { resi: 50 },
+        { resi: 55 },
+        { resi: 57 },
+        { resi: 58 },
+        { resi: 59 },
       ],
       B: [
-        { resi: 52 },
-        { resi: 101 }
+        { resi: 43 },
+        { resi: 46 },
+        { resi: 47 },
+        { resi: 49 },
+        { resi: 171 },
+        { resi: 175 },
       ]
     }
   },
@@ -478,7 +491,7 @@ const CONFIG = {
   // --- Vídeo de la dinámica molecular ---
   dynamics: {
     // URL "raw" de tu archivo .mp4 en GitHub
-    videoUrl: "https://raw.githubusercontent.com/usuario/repositorio/main/dinamica.mp4",
+    videoUrl: "https://rawgithub.com/gabrisanat15/E-JAO2/raw/refs/heads/main/movie3.mp4,
     caption: "Simulación de 100 ns mostrando la estabilidad del dímero en disolución acuosa."
   },
 
