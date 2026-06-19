@@ -492,7 +492,7 @@ const CONFIG = {
   dynamics: {
     // URL "raw" de tu archivo .mp4 en GitHub
     videoUrl: "https://rawgithub.com/gabrisanat15/E-JAO2/raw/refs/heads/main/movie3.mp4,
-    caption: "Simulación de 100 ns mostrando la estabilidad del dímero en disolución acuosa."
+    caption: "A 50-ns simulation showing the stability of the dimer in saline solution."
   },
 
   // --- Datos de la dinámica molecular (añade o quita los que quieras) ---
